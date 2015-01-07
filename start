@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ ! -f /home/admin/znc_configured ]; then
+        touch /home/admin/znc_configured
+	echo "Configure ZNC to your liking now. Remember to choose NO when asked to launch znc!!"
+        su -c "/usr/bin/znc --makeconf" znc
+        exit
+fi
+
+supervisord
+
