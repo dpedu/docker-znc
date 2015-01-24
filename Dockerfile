@@ -23,15 +23,15 @@ EXPOSE 22
 # Pisg dir
 RUN mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output
 # Pisg and nginx
-RUN apt-get install pisg nginx-light
+RUN apt-get install -y pisg nginx-light
 # Set nginx workers to a low number
 RNN sed -i -e"s/^worker_processes\s*4/worker_processes 1/" /etc/nginx/nginx.conf
 # Set nginx user to ZNC user
 RUN sed -i -e"s/^user\s*www\-data/user znc/" /etc/nginx/nginx.conf
-# Set nginx root
-RUN sed -i -e"s/^\s*root\s*\/usr\/share\/nginx\/html/        root \/home\/znc\/pisg\/output/" /etc/nginx/sites-enabled/default
 # Turn off nginx daemon mode
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+# Set up nginx
+COPY default /etc/nginx/sites-available/default
 # Install crontab
 COPY crontab /tmp/
 RUN crontab -u znc /tmp/crontab
