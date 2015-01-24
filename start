@@ -57,14 +57,14 @@ if [ ! -f /home/admin/znc_configured ]; then
     
     touch /home/admin/znc_configured
     
-    #echo -n "Do you want to make any other changes inside this container? (y/n): "
-    #read domore
-    #if [ "$domore" == "y" ] ; then
-    #    echo "Type 'exit' or press ctrl-d when finished."
-    #    exec bash
-    #fi
-    
     echo "Now, run docker start <containerid> run znc in the background."
+    
+    echo -n "Do you want to make any other changes inside this container? (y/N): "
+    read domore
+    if [ "$domore" == "y" ] ; then
+        echo "Type 'exit' when finished."
+        exec bash
+    fi
     
     exit
 fi
