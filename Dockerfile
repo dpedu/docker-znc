@@ -25,7 +25,7 @@ RUN mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output
 # Pisg and nginx
 RUN apt-get install -y pisg nginx-light
 # Set nginx workers to a low number
-RNN sed -i -e"s/^worker_processes\s*4/worker_processes 1/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/^worker_processes\s*4/worker_processes 1/" /etc/nginx/nginx.conf
 # Set nginx user to ZNC user
 RUN sed -i -e"s/^user\s*www\-data/user znc/" /etc/nginx/nginx.conf
 # Turn off nginx daemon mode
