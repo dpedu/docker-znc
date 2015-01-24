@@ -40,6 +40,7 @@ The channel information is private, nginx is configured with HTTP basic authenti
 * Provide a way to make certain channel stat files public 
 * Provide a way to share channel files with secret links
 * Provide all-time, yearly, and monthly pisg outputs
+* Compile provided ZNC modules into the image
 
 [pisg]:http://pisg.sourceforge.net/
 [example]:http://pisg.sourceforge.net/examples
