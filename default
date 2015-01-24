@@ -1,0 +1,14 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+        root /home/znc/pisg/output;
+    index index.html index.htm;
+    server_name localhost;
+    location / {
+        autoindex on;
+        try_files $uri $uri/ =404;
+    }
+    location /gfx/ {
+        alias /usr/share/pisg/gfx/;
+    }
+}
