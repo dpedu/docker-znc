@@ -21,7 +21,7 @@ RUN chmod +x /start
 EXPOSE 22
 
 # Pisg dir
-RUN mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output
+RUN su -c 'mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output' znc
 # Pisg and nginx
 RUN apt-get install -y pisg nginx-light
 # Set nginx workers to a low number
