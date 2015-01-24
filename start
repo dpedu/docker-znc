@@ -1,11 +1,65 @@
 #!/bin/bash
 
 if [ ! -f /home/admin/znc_configured ]; then
-        touch /home/admin/znc_configured
-	echo "Configure ZNC to your liking now. Remember to choose NO when asked to launch znc!!"
+    echo "Welcome! I need to ask you a few questions to configure this ZNC instance for your liking. First, press enter choose and choose a time zone."
+    read
+    
+    dpkg-reconfigure tzdata
+    
+    if [ ! -f /znc.tar.gz ]; then
+        echo "If you want to load data from and existing znc instance create a tar.gz archive containing only the .znc directory and place it in the root of this container as znc.tar.gz."
+        echo "Copy the archive to the container using this command: cat znc.tar.gz | docker exec -i <containerid> bash -c \"/bin/cat > /znc.tar.gz\""
+        echo "Press enter when done. Or, to set up a new znc instance, press enter now."
+        read
+    fi
+    
+    if [ -f /znc.tar.gz ]; then
+        su -c "cd /home/znc ; tar zxvf /znc.tar.gz " znc
+        rm /znc.tar.gz
+        echo "Extracted znc data"
+        if [ ! -d /home/znc/.znc ]; then
+            echo ".znc was not in the archive! Aborted"
+            exit 1
+        fi
+        chown -R znc /home/znc/.znc
+        chgrp -R znc /home/znc/.znc
+        chmod -R 700 /home/znc/.znc
+        echo "ZNC settings loaded successfully."
+    else
+        echo "Configure ZNC to your liking now. Remember to choose NO when asked to launch znc!!"
         su -c "/usr/bin/znc --makeconf" znc
-        exit
+        echo "ZNC configured successfully."
+    fi
+    
+    echo "Enter a username and password to view pisg statistics"
+    while [ 1 ]; do
+        
+        echo -n "Username: "
+        read ng_username
+        
+        echo -n "Password: "
+        read -s ng_password
+        echo ""
+        
+        echo -n "Password (again): "
+        read -s ng_password_
+        echo ""
+        
+        if [ ! "$ng_password" == "$ng_password_" ] || [ -z "$ng_password" ] || [ -z "$ng_username" ] ; then
+            echo "Passwords must match and not be blank"
+            echo ""
+            continue
+        fi
+        break
+    done
+    
+    printf "$ng_username:$(openssl passwd -crypt $ng_password)\n" > /etc/nginx/htpasswd
+    
+    touch /home/admin/znc_configured
+    
+    echo "Now, run docker start <containerid> run znc in the background."
+    
+    exit
 fi
 
 supervisord
-
