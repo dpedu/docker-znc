@@ -20,10 +20,10 @@ class logfile:
 <set ShowMostActiveByHourGraph="1">
 <set ActiveNicksByHour="15">
 <set ShowTime="1">
-<set ShowLines="0">
+<set ShowLines="1">
 <set ShowWpl="1">
 <set ShowWords="1">
-<set ShowLineTime="0">
+<set ShowLineTime="1">
 <set ShowSmileys="1">
 <set ShowKarma="1">
 <set KarmaHistory="15">
