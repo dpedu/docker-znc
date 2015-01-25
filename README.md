@@ -1,8 +1,11 @@
-#Docker ZNC
+Docker ZNC
+==========
 
 Suitable for creating docker containers running ZNC. Now with pisg!
 
-##Setup
+Setup
+=====
+
 **General steps:**
 
 * Install docker
@@ -15,15 +18,18 @@ Suitable for creating docker containers running ZNC. Now with pisg!
 
 When you first run the image, you'll be presented with two ways to configure znc: 
 
-###Set up a new znc instance
+Set up a new znc instance
+=========================
 
 If no import of existing znc data is available, the znc configuration will run. Set it up as needed; the port znc listens on must be exposed in the command used to start the container (-p 4421:4421 above). The final question asks if you want to start znc, **choose `NO`!!**. 
 
-###Import an existing znc instance's configuration
+Import an existing znc instance's configuration
+===============================================
 
 You may migrate an existing ZNC instance into this container by providing a tarball of the source .znc directory. The tarball should contain the .znc directory, only, with everything inside it. The start script will prompt you to insert the .tar.gz file.
 
-##Pisg
+Pisg
+====
 
 This container creates [pisg]-style channel statistics ([example]) for any ZNC users with the "log" module enabled. The stats are regenerated nightly and nginx serves the files on port 80 with a directory structure like this:
 
@@ -33,7 +39,8 @@ This container creates [pisg]-style channel statistics ([example]) for any ZNC u
 
 The channel information is private, nginx is configured with HTTP basic authentication; the password is prompted for during setup.
 
-## TODO
+TODO
+====
 
 * Ensure pisg cache files don't use too much disk space (/home/znc/pisg/cache)
   * If this is a problem, maybe tar/gz channel groups and extract when necessary when running pisg
