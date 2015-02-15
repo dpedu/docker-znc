@@ -39,6 +39,8 @@ This container creates [pisg]-style channel statistics ([example]) for any ZNC u
 
 The channel information is private, nginx is configured with HTTP basic authentication; the password is prompted for during setup.
 
+Individual channel statistic files can be made public by symlinking each, for example, to /home/znc/pisg/output/.pub/mychannel.html, which is public at http://server-ip/pub/mychannel.html. Directory listing for /pub/ is disabled.
+
 TODO
 ====
 

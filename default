@@ -1,14 +1,18 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server ipv6only=on;
-        root /home/znc/pisg/output;
+    root /home/znc/pisg/output;
     index index.html index.htm;
     server_name localhost;
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/htpasswd;
     location / {
         autoindex on;
         try_files $uri $uri/ =404;
+        auth_basic "Restricted";
+        auth_basic_user_file /etc/nginx/htpasswd;
+    }
+    location /pub/ {
+        autoindex off;
+        alias /home/znc/pisg/output/.pub/;
     }
     location /gfx/ {
         alias /usr/share/pisg/gfx/;

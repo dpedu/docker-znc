@@ -22,7 +22,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY default /etc/nginx/sites-available/default
 
 # Install pisg stuff for log generation
-RUN su -c 'mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output' znc
+RUN su -c 'mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output /home/znc/pisg/output/.pub' znc
 COPY pisg.py /home/znc/pisg/
 RUN chmod +x /home/znc/pisg/pisg.py
 
