@@ -33,6 +33,7 @@ class logfile:
 <set ActiveNicks="50">
 <set CacheDir="/home/znc/pisg/cache">
 <set FoulWords="shit piss fuck cunt cocksucker motherfucker tits fag faggot nigger">
+<set UrlHistory="25">
 
 <channel="%(channel)s">
    Logfile = "%(logdir)s_*.log"
