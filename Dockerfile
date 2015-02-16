@@ -24,7 +24,7 @@ COPY default /etc/nginx/sites-available/default
 # Install pisg stuff for log generation
 RUN su -c 'mkdir /home/znc/pisg /home/znc/pisg/cache /home/znc/pisg/output /home/znc/pisg/output/.pub' znc
 COPY pisg.py /home/znc/pisg/
-RUN chmod +x /home/znc/pisg/pisg.py
+RUN chmod +x /home/znc/pisg/pisg.py ; chown znc /home/znc/pisg/pisg.py
 
 # Install crontab
 COPY crontab /tmp/
