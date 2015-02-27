@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Cleanly kill supervisor when container is stopped
+trap 'kill $(jobs -p)' EXIT
+
 if [ ! -f /home/admin/znc_configured ]; then
     echo "Welcome! I need to ask you a few questions to configure this ZNC instance for your liking. First, press enter choose and choose a time zone."
     read
