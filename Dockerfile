@@ -7,7 +7,7 @@ RUN useradd --create-home --groups sudo admin ; echo "admin:admin" | chpasswd ; 
 RUN useradd --create-home znc ; echo "znc:znc" | chpasswd 
 
 # Install sshd, znc, znc extras, nginx, pisg
-RUN mkdir /var/run/sshd ; apt-get update ; apt-get install -y supervisor vim openssh-server znc znc-python znc-dev dpkg-dev pisg nginx-full
+RUN mkdir /var/run/sshd ; apt-get update ; apt-get install -y supervisor vim openssh-server znc znc-python znc-dev dpkg-dev pisg nginx-full irssi screen
 
 # Get ZNC source
 RUN su -c 'cd /home/znc ; apt-get source znc' znc
