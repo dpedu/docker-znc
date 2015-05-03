@@ -32,7 +32,11 @@ RUN crontab -u znc /tmp/crontab
 RUN rm /tmp/crontab
 
 # Install startup stuff
-COPY daemons.conf /etc/supervisor/conf.d/daemons.conf
+COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY nginx.conf /etc/supervisor/conf.d/nginx.conf
+COPY cron.conf /etc/supervisor/conf.d/cron.conf
+COPY znc.conf /etc/supervisor/conf.d/znc.conf
+COPY sshd.conf /etc/supervisor/conf.d/sshd.conf
 COPY start /start
 RUN chmod +x /start
 
@@ -40,3 +44,4 @@ RUN chmod +x /start
 EXPOSE 22
 # nginx
 EXPOSE 80
+
