@@ -1,8 +1,6 @@
-FROM ubuntu:14.04
+FROM dpedu/base
 MAINTAINER Dave P
 
-# Admin user
-RUN useradd --create-home --groups sudo admin ; echo "admin:admin" | chpasswd ; locale-gen en
 # ZNC user
 RUN useradd --create-home znc ; echo "znc:znc" | chpasswd 
 
@@ -13,7 +11,7 @@ RUN mkdir /var/run/sshd ; apt-get update ; apt-get install -y supervisor vim ope
 RUN su -c 'cd /home/znc ; apt-get source znc' znc
 
 # Set nginx workers to a low number
-RUN sed -i -e"s/^worker_processes\s*4/worker_processes 1/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/^worker_processes\s*4/worker_processes 2/" /etc/nginx/nginx.conf
 # Set nginx user to ZNC user
 RUN sed -i -e"s/^user\s*www\-data/user znc/" /etc/nginx/nginx.conf
 # Turn off nginx daemon mode
@@ -34,7 +32,6 @@ RUN rm /tmp/crontab
 # Install startup stuff
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 COPY nginx.conf /etc/supervisor/conf.d/nginx.conf
-COPY cron.conf /etc/supervisor/conf.d/cron.conf
 COPY znc.conf /etc/supervisor/conf.d/znc.conf
 COPY sshd.conf /etc/supervisor/conf.d/sshd.conf
 COPY start /start
@@ -44,4 +41,3 @@ RUN chmod +x /start
 EXPOSE 22
 # nginx
 EXPOSE 80
-
