@@ -3,11 +3,18 @@
 # Cleanly kill supervisor when container is stopped
 trap 'kill $(jobs -p)' EXIT
 
-if [ ! -f /home/admin/znc_configured ]; then
-    echo "Welcome! I need to ask you a few questions to configure this ZNC instance for your liking. First, press enter choose and choose a time zone."
-    read
+function build_modules {
+    echo "Building modules..."
+    cd /srv/znc/module-source/c
+    znc-buildmod *.cpp
+    mv *.so /usr/lib/znc/
+}
+
+if [ ! -f /srv/znc/configs/znc.conf ]; then
+    #echo "Welcome! I need to ask you a few questions to configure this ZNC instance for your liking. First, press enter choose and choose a time zone."
+    #read
     
-    dpkg-reconfigure tzdata
+    #dpkg-reconfigure tzdata
     
     if [ ! -f /znc.tar.gz ]; then
         echo "If you want to load data from and existing znc instance create a tar.gz archive containing only the .znc directory and place it in the root of this container as znc.tar.gz."
@@ -17,20 +24,19 @@ if [ ! -f /home/admin/znc_configured ]; then
     fi
     
     if [ -f /znc.tar.gz ]; then
-        su -c "cd /home/znc ; tar zxvf /znc.tar.gz " znc
+        su -c "cd /srv ; tar zxvf /znc.tar.gz " znc
         rm /znc.tar.gz
         echo "Extracted znc data"
-        if [ ! -d /home/znc/.znc ]; then
-            echo ".znc was not in the archive! Aborted"
+        if [ ! -d /srv/znc ]; then
+            echo "'znc' was not in the archive! Aborted"
             exit 1
         fi
-        chown -R znc /home/znc/.znc
-        chgrp -R znc /home/znc/.znc
-        chmod -R 700 /home/znc/.znc
+        chown -R znc:znc /srv/znc
+        chmod -R 700 /srv/znc
         echo "ZNC settings loaded successfully."
     else
         echo "Configure ZNC to your liking now. Remember to choose NO when asked to launch znc!!"
-        su -c "/usr/bin/znc --makeconf" znc
+        su -c "/usr/bin/znc --makeconf --datadir /srv/znc" znc
         echo "ZNC configured successfully."
     fi
     
@@ -56,11 +62,14 @@ if [ ! -f /home/admin/znc_configured ]; then
         break
     done
     
-    printf "$ng_username:$(openssl passwd -crypt $ng_password)\n" > /etc/nginx/htpasswd
+    mkdir -p /srv/znc/caches/tmp /srv/znc/caches/pisg /srv/znc/caches/pisg-web/pub /srv/znc/caches/nginx
+    chown znc:znc /srv/znc/caches
     
-    touch /home/admin/znc_configured
+    printf "$ng_username:$(openssl passwd -crypt $ng_password)\n" > /srv/znc/caches/nginx/htpasswd
     
-    echo "Now, run docker start <containerid> run znc in the background."
+    build_modules
+    
+    echo "Now, start a new container with the same volumes using -d."
     
     echo -n "Do you want to make any other changes inside this container? (y/N): "
     read domore
@@ -71,5 +80,19 @@ if [ ! -f /home/admin/znc_configured ]; then
     
     exit
 fi
+
+# we probably want this dir to persist...
+if [ ! -f "/etc/ssh/keys/ssh_host_rsa_key" ]; then
+  # Regen keys
+  ssh-keygen -A
+
+  # Move keys to keys dir
+  mv /etc/ssh/ssh_host_* /etc/ssh/keys/
+fi
+
+mkdir -p /srv/znc/caches/tmp /srv/znc/caches/pisg /srv/znc/caches/pisg-web/pub /srv/znc/caches/nginx
+chown znc:znc /srv/znc/caches
+
+build_modules
 
 supervisord

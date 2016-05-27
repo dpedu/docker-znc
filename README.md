@@ -8,13 +8,17 @@ Setup
 
 **General steps:**
 
-* Install docker
-* Clone this repo, cd in
-* Load it as a template: `sudo docker build -t znc .`
-* Start a new container: `sudo docker run -it -p 666:22 -p 4421:4421 -p 80:80 znc /start`
+
+* Build image: `docker build -t znc .`
+* Run container: `docker run -it -p 8022:22 -p 6667:6667 -p 80:80 znc /start`
 * Configure znc
-* Find the new container in your list: `sudo docker ps -a`
-* Run it in the background: `sudo docker start mycontainerid`
+* Find the new container in your list: `docker ps -a`
+* Run it in the background: `docker start mycontainer`
+
+If you wish to preserve data outside the container, mount:
+
+* `-v /host/znc/ssh_keys:/etc/ssh/keys`
+* `-v /host/znc/zncdata:/srv/znc`
 
 When you first run the image, you'll be presented with two ways to configure znc: 
 

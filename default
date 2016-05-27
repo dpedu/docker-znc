@@ -1,9 +1,9 @@
-limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+limit_req_zone $binary_remote_addr zone=one:10m rate=5r/s;
 
 server {
     listen 80 default_server;
     listen [::]:80 default_server ipv6only=on;
-    root /home/znc/pisg/output;
+    root /srv/znc/caches/pisg-web;
     index index.html index.htm;
     server_name localhost;
     location / {
@@ -11,11 +11,11 @@ server {
         autoindex on;
         try_files $uri $uri/ =404;
         auth_basic "Restricted";
-        auth_basic_user_file /etc/nginx/htpasswd;
+        auth_basic_user_file /srv/znc/caches/nginx/htpasswd;
     }
     location /pub/ {
         autoindex off;
-        alias /home/znc/pisg/output/.pub/;
+        alias /srv/znc/caches/pisg-web/pub/;
     }
     location /gfx/ {
         alias /usr/share/pisg/gfx/;

@@ -2,6 +2,7 @@
 import subprocess
 from os import listdir,unlink,chdir,mkdir
 from os.path import exists
+from os.path import join as pj
 from sys import exit
 from random import randint
 
@@ -10,7 +11,9 @@ class logfile:
         self.username = username
         self.network = network
         self.channel = channel
-        self.path = "/home/znc/.znc/users/%s/moddata/log/%s_%s" % (self.username, self.network, self.channel)
+        self.path = "/srv/znc/users/%s/moddata/log/%s_%s" % (self.username, self.network, self.channel)
+        self.pisg_pub = "/srv/znc/caches/pisg-web"
+        self.pisg_cache = "/srv/znc/caches/pisg"
     
     def __str__(self):
         return "<logfile username=%s network=%s channel=%s path=%s>" % (self.username, self.network, self.channel, self.path)
@@ -31,22 +34,21 @@ class logfile:
 <set PicLocation="/gfx">
 <set UserPics="1">
 <set ActiveNicks="50">
-<set CacheDir="/home/znc/pisg/cache">
-<set FoulWords="shit piss fuck cunt cocksucker motherfucker tits fag faggot nigger">
+<set CacheDir="%(pisgcache)s">
 <set UrlHistory="25">
 
 <channel="%(channel)s">
    Logfile = "%(logdir)s_*.log"
    Format = "energymech"
    Network = "%(network)s"
-   OutputFile = "/home/znc/pisg/output/%(username)s/%(network)s/%(channel)s.html"
-</channel>""" % {"logdir":self.path, "network":self.network, "channel":self.channel, "username":self.username}
+   OutputFile = "%(pisgpub)s/%(username)s/%(network)s/%(channel)s.html"
+</channel>""" % {"logdir":self.path, "network":self.network, "channel":self.channel, "username":self.username, "pisgpub":self.pisg_pub, "pisgcache": self.pisg_cache}
     
     def run_pisg(self):
-        if not exists("/home/znc/pisg/output/%s" % self.username):
-            mkdir("/home/znc/pisg/output/%s" % self.username)
-        if not exists("/home/znc/pisg/output/%s/%s" % (self.username, self.network)):
-            mkdir("/home/znc/pisg/output/%s/%s" % (self.username, self.network))
+        if not exists(pj(self.pisg_pub, self.username)):
+            mkdir(pj(self.pisg_pub, self.username))
+        if not exists(pj(self.pisg_pub, self.username, self.network)):
+            mkdir(pj(self.pisg_pub, self.username, self.network))
         configname = "config.%s" % str(randint(0,10000))
         open(configname, "w").write(self.generate_config())
         proc = subprocess.Popen(['pisg',"-co", configname], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -54,15 +56,15 @@ class logfile:
         unlink(configname)
 
 if __name__ == "__main__":
-    chdir("/home/znc/pisg")
+    chdir("/srv/znc/caches/tmp")
     logs = []
-    for user in listdir("/home/znc/.znc/users/"):
-        if not exists("/home/znc/.znc/users/%s/moddata/log/" % user):
+    for user in listdir("/srv/znc/users/"):
+        if not exists("/srv/znc/users/%s/moddata/log/" % user):
             continue
         
         networks = {}
         
-        for fname in listdir("/home/znc/.znc/users/%s/moddata/log/" % user):
+        for fname in listdir("/srv/znc/users/%s/moddata/log/" % user):
             network, parts = fname.split("_", 1)
             if not network in networks:
                 networks[network]=[]

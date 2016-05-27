@@ -1,2 +1,2 @@
-0 3 * * * /home/znc/pisg/pisg.py
+0 3 * * * /usr/local/bin/pisg.py
 
